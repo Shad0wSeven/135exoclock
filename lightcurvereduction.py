@@ -4,7 +4,15 @@ from ldtk.filters import create_tess
 import matplotlib.pyplot as plt
 import numpy as np
 
+
+
 if __name__ == "__main__":
+    z = np.loadtxt('210719.txt', delimiter=' ')
+    
+
+    for i in range(z.shape[0]):
+        z[i][1] = 2 - z[i][1]
+        
     prior = {
         'rprs': 0.1406,                               # Rp/Rs
         'ars': 5.61,                               # a/Rs
@@ -13,7 +21,7 @@ if __name__ == "__main__":
         'u0': 0, 'u1': 0, 'u2': 0, 'u3': 0,         # limb darkening (nonlinear)
         'ecc': 0,                                   # Eccentricity
         'omega': 120,                                 # Arg of periastron
-        'tmid': 2459021.71875,                               # Time of mid transit [day],
+        'tmid': z[0][0],                               # Time of mid transit [day],
         'a1': 0.9777,                                   # Airmass coefficients
         'a2': 0.0191,                                   # trend = a1 * np.exp(a2 * airmass)
 
@@ -54,14 +62,14 @@ if __name__ == "__main__":
     # add bounds for free parameters only
     mybounds = {
         'rprs': [0, 0.6],
-        'tmid': [prior['tmid']-0.01, prior['tmid']+0.01],
+        'tmid': [prior['tmid']-0.1, prior['tmid']+0.1],
         'ars': [1, 15],
         #'a2': [0, 0.3] # uncomment if you want to fit for airmass
         # never list 'a1' in bounds, it is perfectly correlated to exp(a2*airmass)
         # and is solved for during the fit
     }
     
-    z = np.loadtxt('data4.txt', delimiter=' ')
+    
     
     airmass = np.zeros(z[:, 0].shape)
     # myfit = lc_fitter(time, data, dataerr, airmass, prior, mybounds, mode='ns')
